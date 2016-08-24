@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>  
+ <title>Basic HTML5 Column Chart </title>
+	<style>
+	.canvasjs-chart-credit {
+   display: none;
+}
+
+		#chartContainer {
+			height: 400px; width: 755px; margin-left:calc(50% - 380px); z-index: 100;
+		}
+		
+		.menu {
+			height: 100px; padding-left: 20px; margin-top:20px; margin-left: auto; margin-right: auto; text-align: center; width: 600px; z-index: 10;
+		}
+	</style>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.js"></script>
+	<script type="text/javascript" src="index.js"></script>
+</head>
+  <body>
+  <div id="chartContainer">
+    </div>
+	  
+	  <div class="menu">
+		  <button onclick="backup()">Backup Stats</button> - <button onclick="addwords()">Add Words</button> - <button onclick="clear2()">Clear Today</button> - <button onclick="edit()">Edit Stats</button>
+	</div>
+	  <div id="downloaddiv" hidden>
+  </body>
+</html>
+
