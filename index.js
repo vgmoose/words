@@ -102,7 +102,7 @@ function getdate() {
 
 function addwords() {
 	var input = prompt("Paste the words to add in the box below");
-	if (input === null) return;
+	if (input === null || input == '') return;
 	
 	var date = getdate();
 	
@@ -142,7 +142,7 @@ function backup() {
 function edit() {
 	var input = prompt("Make small adjustments, or paste a backup here. It is advised to make a backup before using this function.", JSON.stringify(data));
 	
-	if (input === null) return;
+	if (input === null || input == "") return;
 	
 	data = JSON.parse(input);
 	
