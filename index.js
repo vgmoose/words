@@ -37,13 +37,20 @@ function datetostring(date) {
 
 function repaint() {
 	var chartdata = [];
+	var total = 0;
 	
 	// create objects 
 	for (var date in data)
 	{
 		// add it to the chart data
 		chartdata.push( { "y" : data[date], "label" : date } );
+		
+		// increase the total
+		total += data[date];
 	}
+	
+	// update the total
+	document.getElementById("count").innerHTML = total;
 	
 	// sort the chart data
 	chartdata.sort(comparedates);

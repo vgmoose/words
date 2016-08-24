@@ -1,4 +1,3 @@
-# words
 Web app to keep track of words written over time. [Check it out online here!](http://words.cloud.vgmoose.com)
 
 ![screenshot](https://i.imgur.com/J3sGwCW.png)
