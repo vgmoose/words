@@ -1,4 +1,7 @@
 var data = JSON.parse(localStorage.data || "{}");
+var sumData = false;
+var range = 30;
+var gaps = true;
 
 function drawChart(allDataPoints)
 {
@@ -35,44 +38,59 @@ function datetostring(date) {
 	return (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
 }
 
+function makeCumulative(chartdata) {
+	for (var x=0; x<chartdata.length-1; x++)
+	{
+		chartdata[x+1].y += chartdata[x].y;
+	}
+}
+
 function repaint() {
 	var chartdata = [];
 	var total = 0;
 	
-	// create objects 
+	// create objects and add it to the chart data
 	for (var date in data)
-	{
-		// add it to the chart data
 		chartdata.push( { "y" : data[date], "label" : date } );
-		
-		// increase the total
-		total += data[date];
-	}
-	
-	// update the total
-	document.getElementById("count").innerHTML = total;
 	
 	// sort the chart data
 	chartdata.sort(comparedates);
-	
-	// fill in any gaps in the chart data
-	for (var x=0; x<chartdata.length-1; x++)
-	{
-		var cur_date = new Date(chartdata[x].label);
-		var next_date = new Date();
-		next_date.setDate(cur_date.getDate() + 1);
-		var next_elem = new Date(chartdata[x+1].label);
-		
-		// if the next real date is valid and less than the next date in our data
-		while (next_date < next_elem)
+
+	// sum the data if required
+	if (sumData)
+		makeCumulative(chartdata)
+
+	if (gaps)
+	{	
+		// fill in any gaps in the chart data
+		for (var x=0; x<chartdata.length-1; x++)
 		{
-			// insert next_date into our array
-			x++;
-			var nextdatekey = datetostring(next_date);
-			chartdata.splice(x, 0, { "y": 0, "label": nextdatekey} );
-			next_date.setDate(next_date.getDate() + 1);
+			var cur_date = new Date(chartdata[x].label);
+			var next_date = new Date(cur_date.getTime());
+			next_date.setDate(cur_date.getDate() + 1);
+			var next_elem = new Date(chartdata[x+1].label);
+			
+			// if the next real date is valid and less than the next date in our data
+			while (next_date < next_elem)
+			{
+				// insert next_date into our array
+				x++;
+				var nextdatekey = datetostring(next_date);
+				chartdata.splice(x, 0, { "y": (sumData? chartdata[x].y : 0), "label": nextdatekey} );
+				next_date.setDate(next_date.getDate() + 1);
+			}
 		}
 	}
+
+	// chop off the earlier entries if a range is specified
+	if (range > 0 && chartdata.length > range)
+		chartdata = chartdata.slice(chartdata.length - range);
+
+	for (var x=0; x<chartdata.length; x++)
+		total += data[chartdata[x].label] || 0;
+
+	// update the total
+	document.getElementById("count").innerHTML = total;
 	
 	drawChart(chartdata);
 }
@@ -147,6 +165,30 @@ function edit() {
 	data = JSON.parse(input);
 	
 	save();
+}
+
+function countchange() {
+	// change whether or not the data should be summed as the chart grows
+	sumData = (document.getElementById("countdrop").selectedIndex == 1);
+
+	repaint();
+}
+
+function dayschange() {
+	var vals = [7, 30, 90, 365, -1];
+
+	range = vals[document.getElementById("daysdrop").selectedIndex];
+
+
+
+	repaint();
+}
+
+function gapschange() {
+	// show or hide gaps between blank days
+	gaps = (document.getElementById("gapsdrop").selectedIndex == 0);
+
+	repaint();
 }
 
 window.onload = function () {
